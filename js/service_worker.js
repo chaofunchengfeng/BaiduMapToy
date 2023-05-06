@@ -37,9 +37,28 @@ chrome.tabs.onUpdated.addListener(async function (tabId, changeInfo, tab) {
         await chrome.scripting.executeScript({
             args: [pointMap, 1], target: {tabId: tab.id}, func: injectedFunctionAddPoint, world: "MAIN"
         });
+
+        // 归正
+        await resetHeadingTilt(tabId);
     }
 
 });
+
+async function resetHeadingTilt(tabId) {
+    await chrome.scripting.executeScript({
+        target: {tabId: tabId}, func: injectedFunctionResetHeadingTilt, world: "MAIN"
+    });
+}
+
+function injectedFunctionResetHeadingTilt() {
+    let map0 = window.map;
+    if (map0.getTilt()) {
+        map0.setTilt(0);
+    }
+    if (map0.getHeading()) {
+        map0.resetHeading();
+    }
+}
 
 function injectedFunctionAddPoint(pointMap, type) {
     let map0 = window.map;
