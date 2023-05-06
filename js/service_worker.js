@@ -50,11 +50,11 @@ function injectedFunctionAddPoint(pointMap, type) {
     let overlayArray = map0._overlayArray;
     for (let key in overlayArray) {
         let value = overlayArray[key];
-        if (value._className !== "Polyline" || value.points.length !== 2) {
+        if (value._className !== "Label" || !value.point) {
             continue;
         }
 
-        let point = value.points[0];
+        let point = value.point;
         let k = point.lng + "_" + point.lat;
         if (pointMap[k]) {
             delete pointMap[k];
@@ -63,13 +63,38 @@ function injectedFunctionAddPoint(pointMap, type) {
 
     for (let key in pointMap) {
         let value = pointMap[key];
-        let point1 = new BMap.Point(value.lng, value.lat);
-        let point2 = new BMap.Point(value.lng + 0.5, value.lat);
-        let polyline = new BMap.Polyline([point1, point2], {
-            strokeColor: "red", strokeWeight: 10
-        });
-        map0.addOverlay(polyline);
+        let label = new BMap.Label("●");
+        label.point = new BMap.Point(value.lng, value.lat);
+        label.setZIndex(999999999);
+        // TODO 无论怎样微调，在不同zoom下均会产生不同程度的偏差。等百度地图官方支持海量点吧。
+        label.setOffset(new BMap.Size(-8, -14));
+        label.setStyle({color: "red", fontSize: "24px", border: "none", backgroundColor: "transparent"});
+        map0.addOverlay(label);
     }
+
+    // for (let key in overlayArray) {
+    //     let value = overlayArray[key];
+    //     if (value._className !== "Polyline" || value.points.length !== 2) {
+    //         continue;
+    //     }
+    //
+    //     let point = value.points[0];
+    //     let k = point.lng + "_" + point.lat;
+    //     if (pointMap[k]) {
+    //         delete pointMap[k];
+    //     }
+    // }
+    //
+    // for (let key in pointMap) {
+    //     let value = pointMap[key];
+    //     let point1 = new BMap.Point(value.lng, value.lat);
+    //     let point2 = new BMap.Point(value.lng + 0.5, value.lat);
+    //     let polyline = new BMap.Polyline([point1, point2], {
+    //         strokeColor: "red", strokeWeight: 10
+    //     });
+    //     map0.addOverlay(polyline);
+    // }
+
 }
 
 function injectedFunctionGetCenter() {
