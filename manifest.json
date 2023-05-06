@@ -1,0 +1,38 @@
+{
+  "manifest_version": 3,
+  "name": "百度地图工具",
+  "description": "百度地图工具",
+  "version": "0.1",
+  "icons": {
+    "16": "images/icon-16.png",
+    "32": "images/icon-32.png",
+    "48": "images/icon-48.png",
+    "64": "images/icon-64.png",
+    "128": "images/icon-128.png"
+  },
+  "background": {
+    "service_worker": "js/service_worker.js",
+    "type": "module"
+  },
+  "action": {
+    "default_icon": {
+      "16": "images/icon-16.png",
+      "32": "images/icon-32.png",
+      "48": "images/icon-48.png",
+      "64": "images/icon-64.png",
+      "128": "images/icon-128.png"
+    },
+    "default_title": "百度地图工具"
+  },
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "storage"
+  ],
+  "host_permissions": [
+    "https://map.baidu.com/*",
+    "https://ditu.baidu.com/*"
+  ],
+  "minimum_chrome_version": "91",
+  "homepage_url": "https://github.com/chaofunchengfeng/BaiduMapToy"
+}
