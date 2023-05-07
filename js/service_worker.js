@@ -10,6 +10,7 @@ chrome.action.onClicked.addListener(async () => {
     pointMap = {};
 });
 
+// 监听标签页url更新
 chrome.tabs.onUpdated.addListener(async function (tabId, changeInfo, tab) {
     let url = changeInfo.url;
     if (!url || (!url.startsWith("https://map.baidu.com/") && !url.startsWith("https://ditu.baidu.com/"))) {
@@ -44,12 +45,20 @@ chrome.tabs.onUpdated.addListener(async function (tabId, changeInfo, tab) {
 
 });
 
+/**
+ * 归正地图旋转，3D地图倾斜角 --> 2D地图
+ * @param tabId
+ * @returns {Promise<void>}
+ */
 async function resetHeadingTilt(tabId) {
     await chrome.scripting.executeScript({
         target: {tabId: tabId}, func: injectedFunctionResetHeadingTilt, world: "MAIN"
     });
 }
 
+/**
+ * 归正地图旋转，3D地图倾斜角 --> 2D地图
+ */
 function injectedFunctionResetHeadingTilt() {
     let map0 = window.map;
     if (map0.getTilt()) {
@@ -60,12 +69,19 @@ function injectedFunctionResetHeadingTilt() {
     }
 }
 
+/**
+ * 渲染
+ * @param pointMap
+ * @param type
+ */
 function injectedFunctionAddPoint(pointMap, type) {
+    // 当前map
     let map0 = window.map;
     if (type === 2) {
         map0 = window._indoorMgr._map;
     }
 
+    // 已渲染的点不再重复渲染
     let overlayArray = map0._overlayArray;
     for (let key in overlayArray) {
         let value = overlayArray[key];
@@ -80,6 +96,7 @@ function injectedFunctionAddPoint(pointMap, type) {
         }
     }
 
+    // 渲染
     for (let key in pointMap) {
         let value = pointMap[key];
         let label = new BMap.Label("●");
@@ -91,6 +108,7 @@ function injectedFunctionAddPoint(pointMap, type) {
         map0.addOverlay(label);
     }
 
+    // Polyline方式渲染
     // for (let key in overlayArray) {
     //     let value = overlayArray[key];
     //     if (value._className !== "Polyline" || value.points.length !== 2) {
@@ -116,6 +134,10 @@ function injectedFunctionAddPoint(pointMap, type) {
 
 }
 
+/**
+ * 获取全景地图中心点
+ * @returns {BMap.Point}
+ */
 function injectedFunctionGetCenter() {
     let map = window._indoorMgr._map;
     let elementId = map.container.id;
