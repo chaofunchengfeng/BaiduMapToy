@@ -5,9 +5,15 @@ chrome.storage.local.get("pointMap", (items) => {
 });
 
 // 点击图标
-chrome.action.onClicked.addListener(async () => {
+chrome.action.onClicked.addListener(async (tab) => {
+    // 清空storage
     await chrome.storage.local.clear();
     pointMap = {};
+
+    // 刷新页面
+    if (tab && tab.url && (tab.url.startsWith("https://map.baidu.com/") || tab.url.startsWith("https://ditu.baidu.com/"))) {
+        void chrome.tabs.reload(tab.id);
+    }
 });
 
 // 监听标签页url更新
