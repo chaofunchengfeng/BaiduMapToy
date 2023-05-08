@@ -108,9 +108,20 @@ function injectedFunctionAddPoint(pointMap, type) {
         let label = new BMap.Label("●");
         label.point = new BMap.Point(value.lng, value.lat);
         label.setZIndex(999999999);
-        // TODO 无论怎样微调，在不同zoom下均会产生不同程度的偏差。等百度地图官方支持海量点吧。
-        label.setOffset(new BMap.Size(-8, -14));
-        label.setStyle({color: "red", fontSize: "24px", border: "none", backgroundColor: "transparent"});
+        // label.setStyle({color: "red", fontSize: "24px", border: "none", backgroundColor: "transparent"});.
+        label.setStyle({
+            margin: "0",
+            padding: "0",
+            border: "none",
+            backgroundColor: "transparent",
+            width: "0",
+            height: "0",
+            lineHeight: "0",
+            textAlign: "left",
+            color: "red",
+            fontSize: "24px",
+            textIndent: "-7px",
+        });
         map0.addOverlay(label);
     }
 
