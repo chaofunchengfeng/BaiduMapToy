@@ -174,6 +174,23 @@ function injectedFunctionGetCenter(panoId) {
         for (let key in _instances) {
             let value = _instances[key];
             if (value && value.container && value.container.id && value.container.id === "pano-flash-wrapper" && value.panorama && value.panorama.panoData && value.panorama.panoData.panoId === panoId) {
+
+                // 显示全景拍摄日期
+                let panoCopyright = document.getElementById("pano-copyright");
+                if (panoCopyright && value.panorama.panoData.date) {
+                    let oldSpan = document.getElementById("pano-copyright-toy-date");
+                    if (oldSpan) {
+                        oldSpan.textContent = value.panorama.panoData.date;
+                    } else {
+                        let newSpan = document.createElement("span");
+                        newSpan.id = "pano-copyright-toy-date";
+                        let textNode = document.createTextNode(value.panorama.panoData.date);
+                        newSpan.appendChild(textNode);
+                        panoCopyright.insertBefore(newSpan, panoCopyright.firstChild);
+                    }
+                }
+
+                //
                 if (value.panorama.panoData.rx && value.panorama.panoData.ry) {
                     return {lng: value.panorama.panoData.rx, lat: value.panorama.panoData.ry};
                 } else {
