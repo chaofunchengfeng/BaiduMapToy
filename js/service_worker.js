@@ -24,10 +24,22 @@ chrome.tabs.onUpdated.addListener(async function (tabId, changeInfo, tab) {
     }
     console.log(url);
 
-    if (url.indexOf("#panoid") > -1) {
+    let urlObj = new URL(url);
+
+    if (urlObj.hash && urlObj.hash.startsWith("#panoid=")) {
         // 全景
+
+        // 获取panoId
+        let panoId = null;
+        let regexp = /#panoid=([0-9A-Za-z]*?)&/g;
+        let found = urlObj.hash.match(regexp);
+        if (found && found[0]) {
+            panoId = found[0].substring(8, found[0].length - 1);
+        }
+
+        //
         let re = await chrome.scripting.executeScript({
-            target: {tabId: tab.id}, func: injectedFunctionGetCenter, world: "MAIN"
+            args: [panoId], target: {tabId: tab.id}, func: injectedFunctionGetCenter, world: "MAIN"
         });
         if (re && re[0] && re[0].result) {
             let center = re[0].result;
@@ -153,13 +165,28 @@ function injectedFunctionAddPoint(pointMap, type) {
 
 /**
  * 获取全景地图中心点
- * @returns {BMap.Point}
+ * @param panoId
+ * @returns {{lng: *, lat: *}|null}
  */
-function injectedFunctionGetCenter() {
+function injectedFunctionGetCenter(panoId) {
+    if (panoId) {
+        let _instances = window.$BAIDU$._instances;
+        for (let key in _instances) {
+            let value = _instances[key];
+            if (value && value.container && value.container.id && value.container.id === "pano-flash-wrapper" && value.panorama && value.panorama.panoData && value.panorama.panoData.panoId === panoId) {
+                if (value.panorama.panoData.rx && value.panorama.panoData.ry) {
+                    return {lng: value.panorama.panoData.rx, lat: value.panorama.panoData.ry};
+                } else {
+                    return {lng: value.panorama.panoData.panoX, lat: value.panorama.panoData.panoY};
+                }
+            }
+        }
+    }
+
     let map = window._indoorMgr._map;
     let elementId = map.container.id;
     if ('panoOverviewMap' !== elementId) {
-        return;
+        return null;
     }
-    return map.getCenter();
+    return {lng: map.getCenter().lng, lat: map.getCenter().lat};
 }
