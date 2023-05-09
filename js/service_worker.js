@@ -27,7 +27,7 @@ chrome.tabs.onUpdated.addListener(async function (tabId, changeInfo, tab) {
     let urlObj = new URL(url);
 
     if (urlObj.hash && urlObj.hash.startsWith("#panoid=")) {
-        // 全景
+        // 全景地图
 
         // 获取panoId
         let panoId = null;
@@ -37,9 +37,9 @@ chrome.tabs.onUpdated.addListener(async function (tabId, changeInfo, tab) {
             panoId = found[0].substring(8, found[0].length - 1);
         }
 
-        //
+        // 获取全景地点
         let re = await chrome.scripting.executeScript({
-            args: [panoId], target: {tabId: tab.id}, func: injectedFunctionGetCenter, world: "MAIN"
+            args: [panoId], target: {tabId: tab.id}, func: injectedFunctionGetPanoPoint, world: "MAIN"
         });
         if (re && re[0] && re[0].result) {
             let center = re[0].result;
@@ -47,12 +47,14 @@ chrome.tabs.onUpdated.addListener(async function (tabId, changeInfo, tab) {
             await chrome.storage.local.set({pointMap: pointMap});
         }
 
-        //
+        // 渲染
         await chrome.scripting.executeScript({
             args: [pointMap, 2], target: {tabId: tab.id}, func: injectedFunctionAddPoint, world: "MAIN"
         });
     } else {
-        // 普通
+        // 普通地图
+
+        // 渲染
         await chrome.scripting.executeScript({
             args: [pointMap, 1], target: {tabId: tab.id}, func: injectedFunctionAddPoint, world: "MAIN"
         });
@@ -164,11 +166,12 @@ function injectedFunctionAddPoint(pointMap, type) {
 }
 
 /**
- * 获取全景地图中心点
+ * 获取全景地点
  * @param panoId
  * @returns {{lng: *, lat: *}|null}
  */
-function injectedFunctionGetCenter(panoId) {
+function injectedFunctionGetPanoPoint(panoId) {
+    // 方式1：通过全景ID获取
     if (panoId) {
         let _instances = window.$BAIDU$._instances;
         for (let key in _instances) {
@@ -200,6 +203,7 @@ function injectedFunctionGetCenter(panoId) {
         }
     }
 
+    // 方式2：通过地图中心点获取
     let map = window._indoorMgr._map;
     let elementId = map.container.id;
     if ('panoOverviewMap' !== elementId) {
