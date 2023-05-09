@@ -51,6 +51,12 @@ chrome.tabs.onUpdated.addListener(async function (tabId, changeInfo, tab) {
         await chrome.scripting.executeScript({
             args: [pointMap, 2], target: {tabId: tab.id}, func: injectedFunctionAddPoint, world: "MAIN"
         });
+
+        // 扩大图区
+        await chrome.scripting.executeScript({
+            target: {tabId: tab.id}, func: injectedFunctionMaxPanoMap, world: "MAIN"
+        });
+
     } else {
         // 普通地图
 
@@ -87,6 +93,71 @@ function injectedFunctionResetHeadingTilt() {
     if (map0.getHeading()) {
         map0.resetHeading();
     }
+}
+
+
+/**
+ * 扩大图区
+ */
+async function injectedFunctionMaxPanoMap() {
+
+    //
+    let opx = (document.getElementById("pano-container").offsetHeight - 24) + "px";
+    let t = document.getElementById("pano-overview-wrapper").style.height;
+    if (opx === t) {
+        return;
+    }
+
+    //
+    let TANGRAM_N = null;
+    let _instances = window.$BAIDU$._instances;
+    for (let key in _instances) {
+        let value = _instances[key];
+        if (value && (typeof value.lock === 'function') && (typeof value.expand === 'function') && value._opts && value._opts.parent && value._opts.parent.id && value._opts.parent.id === "pano-overview-wrapper") {
+            TANGRAM_N = value;
+            break;
+        }
+    }
+
+    //
+    window.zoomBtnClickEvent();
+
+    //
+    if (TANGRAM_N) {
+        TANGRAM_N._isExpand = true;
+        // TANGRAM_N.lock();
+        // TANGRAM_N.expand();
+
+        // n.style.display = "block",
+        //     i.style.display = "block",
+        //     baidu.dom.addClass(n, "panoOvFramePin_lock"),
+        //     s.style.display = "block",
+        //     p.style.display = "block",
+        // t.isNotFullHeight() && (baidu.dom.addClass(s, "panoOvZoomBtn_lock"),
+        //     baidu.dom.addClass(p, "panoOvZoomBtnBg"))
+
+        // n
+        document.getElementById("panoOvFramePin").style.display = "block";
+
+        // i
+        document.getElementById("panoOvFramePinBg").style.display = "block";
+
+        // n
+        document.getElementById("panoOvFramePin").classList.add("panoOvFramePin_lock");
+
+        // s
+        document.getElementById("panoOvZoomBtn").style.display = "block";
+
+        // p
+        document.getElementById("panoOvZoomBtnBg").style.display = "block";
+
+        // // s
+        // document.getElementById("panoOvZoomBtn").classList.add("panoOvZoomBtn_lock");
+        //
+        // // p
+        // document.getElementById("panoOvZoomBtnBg").classList.add("panoOvZoomBtnBg");
+    }
+
 }
 
 /**
