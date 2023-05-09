@@ -1,0 +1,10 @@
+.map-toy-infoWindow-content-div {
+    margin: 10px;
+    user-select: text;
+}
+
+.map-toy-infoWindow-content-p {
+    font-size: 14px;
+    margin: 5px;
+    white-space: nowrap;
+}

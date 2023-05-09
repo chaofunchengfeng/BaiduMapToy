@@ -24,6 +24,22 @@
     },
     "default_title": "百度地图工具"
   },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://map.baidu.com/*",
+        "https://ditu.baidu.com/*"
+      ],
+      "js": [
+        "js/content-script.js",
+        "js/gcoord.global.prod.js"
+      ],
+      "css": [
+        "css/content-css.css"
+      ],
+      "world": "MAIN"
+    }
+  ],
   "permissions": [
     "activeTab",
     "scripting",
