@@ -1,18 +1,61 @@
+import {defaultOptions} from '/js/defaultOptions.js';
+
 //
-var pointMap = {};
+let pointMap = {};
 chrome.storage.local.get("pointMap", (items) => {
     pointMap = items.pointMap || {};
 });
 
-// 点击图标
-chrome.action.onClicked.addListener(async (tab) => {
-    // 清空storage
-    await chrome.storage.local.clear();
-    pointMap = {};
+//
+let isMaxPanoMap = "0";
+chrome.storage.local.get("isMaxPanoMap", (items) => {
+    isMaxPanoMap = items.isMaxPanoMap || "0";
+});
 
-    // 刷新页面
-    if (tab && tab.url && (tab.url.startsWith("https://map.baidu.com/") || tab.url.startsWith("https://ditu.baidu.com/"))) {
-        void chrome.tabs.reload(tab.id);
+//
+let options = {...defaultOptions};
+chrome.storage.local.get("options", (items) => {
+    options = items.options || {...defaultOptions};
+});
+
+// // 点击图标
+// chrome.action.onClicked.addListener(async (tab) => {
+//     // 清空storage
+//     await chrome.storage.local.clear();
+//     pointMap = {};
+//
+//     // 刷新页面
+//     if (tab && tab.url && (tab.url.startsWith("https://map.baidu.com/") || tab.url.startsWith("https://ditu.baidu.com/"))) {
+//         void chrome.tabs.reload(tab.id);
+//     }
+// });
+
+// action from popup.html
+chrome.storage.local.onChanged.addListener((changes) => {
+    console.log(changes);
+
+    // isMaxPanoMap
+    if (changes.isMaxPanoMap) {
+        isMaxPanoMap = changes.isMaxPanoMap.newValue;
+        if ("1" !== isMaxPanoMap) {
+            isMaxPanoMap = "0";
+        }
+    }
+    // options
+    if (changes.options) {
+        options = changes.options.newValue;
+        if (!options) {
+            options = {...defaultOptions};
+        }
+    }
+
+    // TODO 可以通过 postMessage 通知更新数据，以减少重复无意义更新
+    // pointMap
+    if (changes.pointMap) {
+        pointMap = changes.pointMap.newValue;
+        if (!pointMap) {
+            pointMap = {};
+        }
     }
 });
 
@@ -44,25 +87,34 @@ chrome.tabs.onUpdated.addListener(async function (tabId, changeInfo, tab) {
         if (re && re[0] && re[0].result) {
             let center = re[0].result;
             pointMap[center.lng + "_" + center.lat] = center;
+
+            //
+            center.panoId = panoId;
+            center.iconColor = options.iconColor;
+            center.iconFontSize = options.iconFontSize;
+            center.iconText = options.iconText;
+
             await chrome.storage.local.set({pointMap: pointMap});
         }
 
         // 渲染
         await chrome.scripting.executeScript({
-            args: [pointMap, 2], target: {tabId: tab.id}, func: injectedFunctionAddPoint, world: "MAIN"
+            args: [pointMap, 2, defaultOptions], target: {tabId: tab.id}, func: injectedFunctionAddPoint, world: "MAIN"
         });
 
         // 扩大图区
-        await chrome.scripting.executeScript({
-            target: {tabId: tab.id}, func: injectedFunctionMaxPanoMap, world: "MAIN"
-        });
+        if ("1" === isMaxPanoMap) {
+            await chrome.scripting.executeScript({
+                target: {tabId: tab.id}, func: injectedFunctionMaxPanoMap, world: "MAIN"
+            });
+        }
 
     } else {
         // 普通地图
 
         // 渲染
         await chrome.scripting.executeScript({
-            args: [pointMap, 1], target: {tabId: tab.id}, func: injectedFunctionAddPoint, world: "MAIN"
+            args: [pointMap, 1, defaultOptions], target: {tabId: tab.id}, func: injectedFunctionAddPoint, world: "MAIN"
         });
 
         // 归正
@@ -94,7 +146,6 @@ function injectedFunctionResetHeadingTilt() {
         map0.resetHeading();
     }
 }
-
 
 /**
  * 扩大图区
@@ -161,11 +212,12 @@ async function injectedFunctionMaxPanoMap() {
 }
 
 /**
- * 渲染
+ *
  * @param pointMap
  * @param type
+ * @param defaultOptions
  */
-function injectedFunctionAddPoint(pointMap, type) {
+function injectedFunctionAddPoint(pointMap, type, defaultOptions) {
     // 当前map
     let map0 = window.map;
     if (type === 2) {
@@ -190,11 +242,28 @@ function injectedFunctionAddPoint(pointMap, type) {
     // 渲染
     for (let key in pointMap) {
         let value = pointMap[key];
-        let label = new BMap.Label("●");
+
+        let labelContent = value.iconText;
+        if (!labelContent) {
+            labelContent = defaultOptions.iconText;
+        }
+        let label = new BMap.Label(labelContent);
+
         label.point = new BMap.Point(value.lng, value.lat);
         label.setZIndex(999999999);
         // label.setStyle({color: "red", fontSize: "24px", border: "none", backgroundColor: "transparent"});.
-        label.setStyle({
+
+        let color = value.iconColor;
+        if (!color) {
+            color = defaultOptions.iconColor;
+        }
+
+        let fontSize = value.iconFontSize;
+        if (!fontSize) {
+            fontSize = defaultOptions.iconFontSize;
+        }
+
+        let styles = {
             margin: "0",
             padding: "0",
             border: "none",
@@ -203,10 +272,11 @@ function injectedFunctionAddPoint(pointMap, type) {
             height: "0",
             lineHeight: "0",
             textAlign: "left",
-            color: "red",
-            fontSize: "24px",
+            color: color,
+            fontSize: fontSize + "px",
             textIndent: "-0.25em",
-        });
+        };
+        label.setStyle(styles);
         map0.addOverlay(label);
     }
 

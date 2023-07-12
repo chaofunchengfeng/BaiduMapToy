@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <title>百度地图工具</title>
+    <meta content="百度地图工具" name="description"/>
+    <meta content="百度地图工具" name="keyword"/>
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible"/>
+    <meta content="webkit" name="renderer"/>
+    <meta content="webkit" name="force-rendering"/>
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0"
+          name="viewport">
+    <meta content="#fff" name="theme-color"/>
+    <meta content="telephone=no,email=no" name="format-detection">
+    <link href="/images/favicon.ico" rel="icon">
+    <link href="/css/popup.css" rel="stylesheet">
+</head>
+<body>
+<div class="MAIN">
+
+    <div>
+        <label for="icon-select">图标样式：</label>
+        <select id="icon-select">
+            <option value="●">●</option>
+            <option value="○">○</option>
+            <option value="◆">◆</option>
+            <option value="◇">◇</option>
+            <option value="■">■</option>
+            <option value="□">□</option>
+            <option value="▲">▲</option>
+            <option value="△">△</option>
+            <option value="▼">▼</option>
+            <option value="▽">▽</option>
+            <option value="▶">▶</option>
+            <option value="▷">▷</option>
+            <option value="◀">◀</option>
+            <option value="◁">◁</option>
+            <option value="★">★</option>
+            <option value="☆">☆</option>
+            <option value="♠">♠</option>
+            <option value="♤">♤</option>
+            <option value="♥">♥</option>
+            <option value="♡">♡</option>
+            <option value="♦">♦</option>
+            <option value="♢">♢</option>
+            <option value="♣">♣</option>
+            <option value="♧">♧</option>
+            <option value="❶">❶</option>
+            <option value="❷">❷</option>
+            <option value="❸">❸</option>
+            <option value="❹">❹</option>
+            <option value="❺">❺</option>
+            <option value="❻">❻</option>
+            <option value="❼">❼</option>
+            <option value="❽">❽</option>
+            <option value="❾">❾</option>
+            <option value="❿">❿</option>
+            <option value="①">①</option>
+            <option value="②">②</option>
+            <option value="③">③</option>
+            <option value="④">④</option>
+            <option value="⑤">⑤</option>
+            <option value="⑥">⑥</option>
+            <option value="⑦">⑦</option>
+            <option value="⑧">⑧</option>
+            <option value="⑨">⑨</option>
+            <option value="⑩">⑩</option>
+        </select>
+    </div>
+
+    <div>
+        <label for="color-input">图标颜色：</label>
+        <input id="color-input" type="color">
+    </div>
+
+    <div>
+        <label for="font-size-input">图标大小：</label>
+        <label id="font-size-num-input"></label>
+
+        <div>
+            <input id="font-size-input" type="range" min="12" max="72" list="font-size-list">
+            <datalist id="font-size-list">
+                <option value="12" label="12"></option>
+                <option value="24" label="24"></option>
+                <option value="36" label="36"></option>
+                <option value="48" label="48"></option>
+                <option value="60" label="60"></option>
+                <option value="72" label="72"></option>
+            </datalist>
+        </div>
+    </div>
+
+    <div>
+        <label for="icon-demo-label">效果预览：</label>
+        <div class="icon-demo-label-div">
+            <label id="icon-demo-label">♢</label>
+        </div>
+    </div>
+
+    <div>
+        <input id="updateHistory" type="button" value="以此设置更新现有">
+    </div>
+
+    <div>
+        <input id="resetOptions" type="button" value="恢复默认设置">
+    </div>
+
+    <hr>
+
+    <div>
+        <!--        isMaxPanoMap-->
+        <input type="checkbox" id="isMaxPanoMap">
+        <label for="isMaxPanoMap">自动放大全景地图</label>
+    </div>
+
+    <hr>
+
+    <div>
+        <input id="clearHistory" type="button" value="清除全部记录">
+    </div>
+
+</div>
+
+<script type="module" src="/js/popup.js"></script>
+
+</body>
+</html>
