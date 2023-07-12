@@ -205,7 +205,7 @@ function injectedFunctionAddPoint(pointMap, type) {
             textAlign: "left",
             color: "red",
             fontSize: "24px",
-            textIndent: "-7px",
+            textIndent: "-0.25em",
         });
         map0.addOverlay(label);
     }
