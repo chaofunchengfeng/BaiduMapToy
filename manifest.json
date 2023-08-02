@@ -10,6 +10,7 @@
     "64": "images/icon-64.png",
     "128": "images/icon-128.png"
   },
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAg1EH9ptJZjbj8baI54W9PmPnYUBLSKhVo2LHQQx91uNOPHDvitdT9lPIz0Z6u2wmaRX6auRkpRrUXW7sW4XsJR2ce4j0KH+B+o5Q94Z0Z5Vi8gmumlbEgjTy1ZfF84wz4GV8rkDIuztByCkVsS1EU3a8ti1F6ZCt1RJPsdTTQTQ0lmjmcTh2THd1STCwTuK9zBfFH22YNS4wG59YnST4rxfL+ZCZulHqNIC5YxqW2PhtgQkH/+qMRVzGpLJUv/Byl+wY4QEDE9LVVwEGfTWcaV1PPl7DjvZNtuO0ou1hWCZALMjMojaoZHqEfG+QpeEjQdtlqsrHtlEKEztIITGvUwIDAQAB",
   "background": {
     "service_worker": "js/service_worker.js",
     "type": "module"
@@ -50,6 +51,12 @@
     "https://map.baidu.com/*",
     "https://ditu.baidu.com/*"
   ],
+  "externally_connectable": {
+    "matches": [
+      "https://map.baidu.com/*",
+      "https://ditu.baidu.com/*"
+    ]
+  },
   "minimum_chrome_version": "91",
   "homepage_url": "https://github.com/chaofunchengfeng/BaiduMapToy"
 }
