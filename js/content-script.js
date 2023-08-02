@@ -2,7 +2,7 @@
 setTimeout(() => {
     if (window.contextMenu) {
         window.contextMenu.addSeparator();
-        let menuItem = new BMap.MenuItem("查看经纬度", (point) => {
+        let latLngViewMenuItem = new BMap.MenuItem("查看经纬度", (point) => {
             let marker = new BMap.Marker(point);
             window.map.addOverlay(marker);
 
@@ -27,6 +27,11 @@ setTimeout(() => {
             marker.openInfoWindow(infoWindow);
             infoWindow.setTitle("<p class='iw_poi_title' title='经纬度'>经纬度</p>");
         });
-        window.contextMenu.addItem(menuItem);
+        window.contextMenu.addItem(latLngViewMenuItem);
+
+        let markViewedMenuItem = new BMap.MenuItem("标记此点", (point) => {
+            void chrome.runtime.sendMessage("aadnioialfjgabclcmkcgdplnhkhmkgh", point);
+        });
+        window.contextMenu.addItem(markViewedMenuItem);
     }
 }, 3000);

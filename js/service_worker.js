@@ -59,6 +59,34 @@ chrome.storage.local.onChanged.addListener((changes) => {
     }
 });
 
+// 网页 - 标记此点
+chrome.runtime.onMessageExternal.addListener(async function (message, sender, sendResponse) {
+
+    if (!message || !message.lat || !message.lng || !sender || !sender.tab || !sender.tab.id) {
+        return;
+    }
+
+    //
+    let center = message;
+    pointMap[center.lng + "_" + center.lat] = center;
+
+    //
+    center.iconColor = options.iconColor;
+    center.iconFontSize = options.iconFontSize;
+    center.iconText = options.iconText;
+
+    await chrome.storage.local.set({pointMap: pointMap});
+    // 渲染
+    await chrome.scripting.executeScript({
+        args: [pointMap, 1, defaultOptions],
+        target: {tabId: sender.tab.id},
+        func: injectedFunctionAddPoint,
+        world: "MAIN"
+    });
+
+});
+
+
 // 监听标签页url更新
 chrome.tabs.onUpdated.addListener(async function (tabId, changeInfo, tab) {
     let url = changeInfo.url;
