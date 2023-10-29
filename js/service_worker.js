@@ -59,32 +59,55 @@ chrome.storage.local.onChanged.addListener((changes) => {
     }
 });
 
-// 网页 - 标记此点
+// 监听消息。网页右键菜单 --> 标记此点/标记搜索列表
 chrome.runtime.onMessageExternal.addListener(async function (message, sender, sendResponse) {
 
-    if (!message || !message.lat || !message.lng || !sender || !sender.tab || !sender.tab.id) {
+    if (!message || !message.type) {
         return;
     }
 
-    //
-    let center = message;
-    pointMap[center.lng + "_" + center.lat] = center;
+    let type = message.type;
+    let data = message.data;
 
-    //
-    center.iconColor = options.iconColor;
-    center.iconFontSize = options.iconFontSize;
-    center.iconText = options.iconText;
-
-    await chrome.storage.local.set({pointMap: pointMap});
-    // 渲染
-    await chrome.scripting.executeScript({
-        args: [pointMap, 1, defaultOptions],
-        target: {tabId: sender.tab.id},
-        func: injectedFunctionAddPoint,
-        world: "MAIN"
-    });
+    if ("markPoint" === type) {
+        if (!data || !data.lat || !data.lng || !sender || !sender.tab || !sender.tab.id) {
+            return;
+        }
+        await markPointList([data], sender.tab);
+        return;
+    } else if ("markSearchResult" === type) {
+        if (!data || !sender || !sender.tab || !sender.tab.id) {
+            return;
+        }
+        await markPointList(data, sender.tab);
+        return;
+    } else {
+        return;
+    }
 
 });
+
+async function markPointList(pointList, tab) {
+
+    //
+    for (let point of pointList) {
+        pointMap[point.lng + "_" + point.lat] = point;
+
+        //
+        point.iconColor = options.iconColor;
+        point.iconFontSize = options.iconFontSize;
+        point.iconText = options.iconText;
+    }
+
+    //
+    await chrome.storage.local.set({pointMap: pointMap});
+
+    // 渲染
+    await chrome.scripting.executeScript({
+        args: [pointMap, 1, defaultOptions], target: {tabId: tab.id}, func: injectedFunctionAddPoint, world: "MAIN"
+    });
+
+}
 
 
 // 监听标签页url更新

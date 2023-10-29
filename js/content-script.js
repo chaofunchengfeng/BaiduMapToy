@@ -12,7 +12,10 @@
             //
             if (window.contextMenu) {
                 clearInterval(intervalID);
+                //
                 window.contextMenu.addSeparator();
+
+                // 查看经纬度
                 let latLngViewMenuItem = new BMap.MenuItem("查看经纬度", (point) => {
                     let marker = new BMap.Marker(point);
                     window.map.addOverlay(marker);
@@ -40,12 +43,25 @@
                 });
                 window.contextMenu.addItem(latLngViewMenuItem);
 
-                let markViewedMenuItem = new BMap.MenuItem("标记此点", (point) => {
-                    void chrome.runtime.sendMessage("aadnioialfjgabclcmkcgdplnhkhmkgh", point);
+                // 标记此点
+                let markPointMenuItem = new BMap.MenuItem("标记此点", (point) => {
+                    void chrome.runtime.sendMessage("aadnioialfjgabclcmkcgdplnhkhmkgh", {
+                        type: "markPoint", data: point
+                    });
                 });
-                window.contextMenu.addItem(markViewedMenuItem);
-            }
+                window.contextMenu.addItem(markPointMenuItem);
 
+                // 标记搜索列表
+                let markSearchResultMenuItem = new BMap.MenuItem("标记搜索列表", (point) => {
+                    if (!window.PoiSearchInst || !window.PoiSearchInst.points || !window.PoiSearchInst.points.length) {
+                        return;
+                    }
+                    void chrome.runtime.sendMessage("aadnioialfjgabclcmkcgdplnhkhmkgh", {
+                        type: "markSearchResult", data: window.PoiSearchInst.points
+                    });
+                });
+                window.contextMenu.addItem(markSearchResultMenuItem);
+            }
 
         } catch (e) {
             console.error(e)
