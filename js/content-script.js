@@ -70,6 +70,8 @@ function contextMenuAddItem() {
     // 标记搜索列表
     let markSearchResultMenuItem = new BMap.MenuItem("标记搜索列表", (point) => {
         if (!window.PoiSearchInst || !window.PoiSearchInst.points || !window.PoiSearchInst.points.length) {
+            let toast = require("common:widget/ui/toast/toast.js")
+            toast.show("未找到搜索列表！", "warning");
             return;
         }
         void chrome.runtime.sendMessage("aadnioialfjgabclcmkcgdplnhkhmkgh", {
