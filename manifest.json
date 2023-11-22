@@ -41,6 +41,16 @@
       ],
       "run_at": "document_idle",
       "world": "MAIN"
+    },
+    {
+      "matches": [
+        "https://jiejing.qq.com/*"
+      ],
+      "js": [
+        "js/content-script-jiejing.qq.com.js"
+      ],
+      "run_at": "document_start",
+      "world": "MAIN"
     }
   ],
   "permissions": [
