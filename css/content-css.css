@@ -1,6 +1,31 @@
 .map-toy-infoWindow-content-div {
-    margin: 10px;
+    margin: 5px;
     user-select: text;
+    font-size: 14px;
+}
+
+.map-toy-infoWindow-content-table {
+    border: none;
+    border-spacing: 0 10px;
+}
+
+.map-toy-infoWindow-content-span {
+    display: inline-block;
+    margin: 0 4px 0 0;
+}
+
+.map-toy-infoWindow-content-button {
+    margin: 0 4px;
+    padding: 4px 6px;
+    cursor: pointer;
+    background-color: #A0CFFF;
+    border: none;
+    border-radius: 2px !important;
+    white-space: nowrap;
+}
+
+.map-toy-infoWindow-content-button:hover {
+    background-color: #80CEFF;
 }
 
 .map-toy-infoWindow-content-p {

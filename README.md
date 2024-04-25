@@ -6,6 +6,15 @@ A Chrome extension(mv3) for [Baidu Map https://map.baidu.com/](https://map.baidu
 
 查看全景后，自动在地图标注全景位置，以便知晓哪里被查看过。即：全景查看的历史记录在地图上显示。
 
+另有 显示全景拍摄日期、经纬度坐标拾取、坐标反查、标记手选点、标记搜索列表 等功能。
+
+支持的坐标系:
+
+- GCJ02 (国测局02、火星坐标系)
+- WGS84 (大地坐标系)
+- BD09 (百度坐标系)
+- BD09MC (百度墨卡托投影坐标系)
+
 ## 使用
 
 查看全景后，自动标注。
@@ -13,6 +22,12 @@ A Chrome extension(mv3) for [Baidu Map https://map.baidu.com/](https://map.baidu
 点击图标清空历史记录。
 
 ## 更新日志
+
+### v0.7
+
+*20241222*
+
+1. 优化经纬度坐标拾取、坐标反查
 
 ### v0.6
 
