@@ -23,11 +23,12 @@ A Chrome extension(mv3) for [Baidu Map https://map.baidu.com/](https://map.baidu
 
 ## 更新日志
 
-### v0.7
+### v1.8
 
 *20241222*
 
 1. 优化经纬度坐标拾取、坐标反查
+2. 导入导出设置及标记点
 
 ### v0.6
 

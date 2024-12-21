@@ -118,3 +118,23 @@ hr {
 #clearHistory:hover {
     background: #F89898;
 }
+
+.exportImportDiv {
+    display: flex;
+}
+
+.exportImportButton {
+    font-size: 14px;
+    color: #ffffff;
+    padding: 2px 10px;
+    background: #A0CFFF;
+    border-radius: 3px;
+    cursor: pointer;
+    display: inline-block;
+    margin: 2px auto;
+}
+
+.exportImportButton:hover {
+    background: #409EFF;
+}
+

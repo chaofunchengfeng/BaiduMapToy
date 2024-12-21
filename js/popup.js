@@ -29,6 +29,11 @@ let updateHistoryButton = document.getElementById('updateHistory');
 let resetOptionsButton = document.getElementById('resetOptions');
 let clearHistoryButton = document.getElementById('clearHistory');
 
+//
+let exportButton = document.getElementById('exportAllLocalStorageData');
+let importButton = document.getElementById('importAllLocalStorageData');
+
+
 // 初始化
 initData();
 
@@ -199,4 +204,71 @@ async function getCurrentTab() {
     let queryOptions = {active: true, lastFocusedWindow: true};
     let [tab] = await chrome.tabs.query(queryOptions);
     return tab;
+}
+
+// 导出
+exportButton.onclick = importButton.onclick = async function () {
+    let exportData = await chrome.storage.local.get(null)
+    if (!exportData) {
+        return;
+    }
+    exportData.version = chrome.runtime.getManifest().version;
+
+    let str = JSON.stringify(exportData);
+    let url = "data:text/plain;charset=utf-8," + encodeURIComponent(str);
+    let filename = chrome.runtime.getManifest().name + "_导出_" + getDateString();
+    chrome.downloads.download({url: url, filename: filename, conflictAction: "uniquify"}, null);
+}
+
+// 导入
+importButton.onclick = function () {
+    let result = confirm("导入数据将会覆盖现有数据，确定导入？");
+    if (!result) {
+        return;
+    }
+
+    //
+    let fileChooser = document.createElement("input");
+    fileChooser.type = 'file';
+    fileChooser.style.display = 'none';
+    fileChooser.addEventListener('change', function (evt) {
+        let f = evt.target.files[0];
+        if (f) {
+            let reader = new FileReader();
+            reader.onload = async function (e) {
+                try {
+                    let content = e.target.result;
+                    content = decodeURIComponent(content.toString());
+                    if (!content) {
+                        alert("文件错误！");
+                        return;
+                    }
+                    let importData = JSON.parse(content);
+                    if (!importData.version) {
+                        alert("文件错误！");
+                        return;
+                    }
+                    delete importData.version;
+
+                    let entries = Object.entries(importData);
+                    for (const [key, value] of entries) {
+                        await chrome.storage.local.set({[key]: value});
+                    }
+                    //
+                    void updateTab();
+                    window.location.reload();
+                } catch (e) {
+                    alert("未知错误！");
+                }
+            }
+            reader.readAsText(f);
+        }
+    });
+    document.body.appendChild(fileChooser);
+    fileChooser.click();
+}
+
+function getDateString() {
+    let date = new Date();
+    return "" + date.getFullYear() + (date.getMonth() + 1) + date.getDate();
 }
