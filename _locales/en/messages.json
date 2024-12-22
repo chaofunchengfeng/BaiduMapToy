@@ -1,0 +1,8 @@
+{
+  "extensionName": {
+    "message": "BaiduMapToy"
+  },
+  "extensionDescription": {
+    "message": "A Chrome extension(mv3) for [Baidu Map https://map.baidu.com/](https://map.baidu.com/)"
+  }
+}

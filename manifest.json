@@ -1,8 +1,9 @@
 {
   "manifest_version": 3,
-  "name": "百度地图工具",
-  "description": "查看百度地图全景（街景）后，自动在地图标注全景位置。\n另有 显示全景拍摄日期、经纬度坐标拾取、坐标反查（支持GCJ02、WGS84、BD09、BD09MC等多种坐标系)）等功能。",
-  "version": "1.8.1",
+  "name": "__MSG_extensionName__",
+  "description": "__MSG_extensionDescription__",
+  "version": "1.9",
+  "default_locale": "zh_CN",
   "icons": {
     "16": "images/icon-16.png",
     "32": "images/icon-32.png",
