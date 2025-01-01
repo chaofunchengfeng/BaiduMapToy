@@ -61,11 +61,23 @@ function contextMenuAddItem() {
     });
     window.contextMenu.addItem(latLngViewMenuItem);
 
+    // TODO 是否可优化？
+    // 这里 chrome.runtime.id 为空，不确定是不是 Chromium 的 bug
+    let extensionIdArr = ["aadnioialfjgabclcmkcgdplnhkhmkgh", // Chrome Web Store
+        "encphpgekjhphpenkoicchghjaeiiodg"] // Microsoft Edge Add-ons
+
     // 标记此点
     let markPointMenuItem = new BMap.MenuItem("标记此点", (point) => {
-        void chrome.runtime.sendMessage("aadnioialfjgabclcmkcgdplnhkhmkgh", {
-            type: "markPoint", data: point
-        });
+        extensionIdArr.forEach(item => {
+            try {
+                void chrome.runtime.sendMessage(item, {
+                    type: "markPoint", data: point
+                });
+            } catch (e) {
+                console.log(e);
+            }
+
+        })
     });
     window.contextMenu.addItem(markPointMenuItem);
 
@@ -76,9 +88,16 @@ function contextMenuAddItem() {
             toast.show("未找到搜索列表！", "warning");
             return;
         }
-        void chrome.runtime.sendMessage("aadnioialfjgabclcmkcgdplnhkhmkgh", {
-            type: "markSearchResult", data: window.PoiSearchInst.points
-        });
+        extensionIdArr.forEach(item => {
+            try {
+                void chrome.runtime.sendMessage(item, {
+                    type: "markSearchResult", data: window.PoiSearchInst.points
+                });
+            } catch (e) {
+                console.log(e);
+            }
+
+        })
     });
     window.contextMenu.addItem(markSearchResultMenuItem);
 }

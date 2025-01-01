@@ -33,6 +33,13 @@ A Chrome extension(mv3) for [Baidu Map https://map.baidu.com/](https://map.baidu
 
 ## 更新日志
 
+### v1.9
+
+*20250102*
+
+1. i18n
+2. 兼容 Microsoft Edge Add-ons
+
 ### v1.8
 
 *20241222*
