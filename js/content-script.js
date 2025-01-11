@@ -32,33 +32,7 @@ function contextMenuAddItem() {
     window.contextMenu.addSeparator();
 
     // 经纬度 查看/反查
-    let latLngViewMenuItem = new BMap.MenuItem("经纬度 查看/反查", (point) => {
-        let marker = new BMap.Marker(point);
-        window.map.addOverlay(marker);
-
-        // for 地图坐标系经纬度转换
-        // source code from https://github.com/hujiulong/gcoord
-        // license https://github.com/hujiulong/gcoord/blob/bd6e63d79bc38ad47e868ddab3bf263bca16b4c6/LICENSE (MIT License)
-        const gcj02LngLat = gcoord.transform([point.lng, point.lat], gcoord.BD09MC, gcoord.GCJ02);
-        const wgs84LngLat = gcoord.transform([point.lng, point.lat], gcoord.BD09MC, gcoord.WGS84);
-        const bd09LngLat = gcoord.transform([point.lng, point.lat], gcoord.BD09MC, gcoord.BD09);
-
-        let content = "<div class='map-toy-infoWindow-content-div'>";
-        content += `<table class="map-toy-infoWindow-content-table">`;
-        content += `<tr> <td><span class="map-toy-infoWindow-content-span">GCJ02: </span></td> <td><input id="map-toy-input-gcj02" type="text" value="${gcj02LngLat[0].toString().substring(0, 10)}, ${gcj02LngLat[1].toString().substring(0, 10)}"/></td> <td><button class="map-toy-infoWindow-content-button" onclick="lngLat2PointClick('gcj02')">反查</button></td> </tr>`;
-        content += `<tr> <td><span class="map-toy-infoWindow-content-span">WGS84: </span></td> <td><input id="map-toy-input-wgs84" type="text" value="${wgs84LngLat[0].toString().substring(0, 10)}, ${wgs84LngLat[1].toString().substring(0, 10)}"/></td> <td><button class="map-toy-infoWindow-content-button" onclick="lngLat2PointClick('wgs84')">反查</button></td> </tr>`;
-        content += `<tr> <td><span class="map-toy-infoWindow-content-span">BD09:  </span></td> <td><input id="map-toy-input-bd09" type="text" value="${bd09LngLat[0].toString().substring(0, 10)}, ${bd09LngLat[1].toString().substring(0, 10)}"/></td> <td><button class="map-toy-infoWindow-content-button" onclick="lngLat2PointClick('bd09')">反查</button></td> </tr>`;
-        content += `<tr> <td><span class="map-toy-infoWindow-content-span">BD09MC:</span></td> <td><input id="map-toy-input-bd09mc" type="text" value="${point.lng}, ${point.lat}"/></td> <td><button class="map-toy-infoWindow-content-button" onclick="lngLat2PointClick('bd09mc')">反查</button></td> </tr>`;
-        content += `</table>`;
-        content += "</div>";
-
-        let infoWindow = new BMap.InfoWindow(content);
-        infoWindow.addEventListener("close", () => {
-            window.map.removeOverlay(marker);
-        });
-        marker.openInfoWindow(infoWindow);
-        infoWindow.setTitle("<p class='iw_poi_title' title='经纬度'>经纬度</p>");
-    });
+    let latLngViewMenuItem = new BMap.MenuItem("经纬度 查看/反查", coordPick);
     window.contextMenu.addItem(latLngViewMenuItem);
 
     // TODO 是否可优化？
@@ -102,6 +76,35 @@ function contextMenuAddItem() {
     window.contextMenu.addItem(markSearchResultMenuItem);
 }
 
+// 坐标拾取
+function coordPick(point) {
+    let marker = new BMap.Marker(point);
+    window.map.addOverlay(marker);
+
+    // for 地图坐标系经纬度转换
+    // source code from https://github.com/hujiulong/gcoord
+    // license https://github.com/hujiulong/gcoord/blob/bd6e63d79bc38ad47e868ddab3bf263bca16b4c6/LICENSE (MIT License)
+    const gcj02LngLat = gcoord.transform([point.lng, point.lat], gcoord.BD09MC, gcoord.GCJ02);
+    const wgs84LngLat = gcoord.transform([point.lng, point.lat], gcoord.BD09MC, gcoord.WGS84);
+    const bd09LngLat = gcoord.transform([point.lng, point.lat], gcoord.BD09MC, gcoord.BD09);
+
+    let content = "<div class='map-toy-infoWindow-content-div'>";
+    content += `<table class="map-toy-infoWindow-content-table">`;
+    content += `<tr> <td><span class="map-toy-infoWindow-content-span">GCJ02: </span></td> <td><input id="map-toy-input-gcj02" type="text" value="${gcj02LngLat[0].toString().substring(0, 10)}, ${gcj02LngLat[1].toString().substring(0, 10)}"/></td> <td><button class="map-toy-infoWindow-content-button" onclick="lngLat2PointClick('gcj02')">反查</button></td> </tr>`;
+    content += `<tr> <td><span class="map-toy-infoWindow-content-span">WGS84: </span></td> <td><input id="map-toy-input-wgs84" type="text" value="${wgs84LngLat[0].toString().substring(0, 10)}, ${wgs84LngLat[1].toString().substring(0, 10)}"/></td> <td><button class="map-toy-infoWindow-content-button" onclick="lngLat2PointClick('wgs84')">反查</button></td> </tr>`;
+    content += `<tr> <td><span class="map-toy-infoWindow-content-span">BD09:  </span></td> <td><input id="map-toy-input-bd09" type="text" value="${bd09LngLat[0].toString().substring(0, 10)}, ${bd09LngLat[1].toString().substring(0, 10)}"/></td> <td><button class="map-toy-infoWindow-content-button" onclick="lngLat2PointClick('bd09')">反查</button></td> </tr>`;
+    content += `<tr> <td><span class="map-toy-infoWindow-content-span">BD09MC:</span></td> <td><input id="map-toy-input-bd09mc" type="text" value="${point.lng}, ${point.lat}"/></td> <td><button class="map-toy-infoWindow-content-button" onclick="lngLat2PointClick('bd09mc')">反查</button></td> </tr>`;
+    content += `</table>`;
+    content += "</div>";
+
+    let infoWindow = new BMap.InfoWindow(content);
+    infoWindow.addEventListener("close", () => {
+        window.map.removeOverlay(marker);
+    });
+    marker.openInfoWindow(infoWindow);
+    infoWindow.setTitle("<p class='iw_poi_title' title='经纬度'>经纬度</p>");
+}
+
 function lngLat2PointClick(type) {
 
     try {
@@ -127,7 +130,6 @@ function lngLat2PointClick(type) {
                 bd09McLngLat = gcoord.transform(lngLatArr, gcoord.BD09, gcoord.BD09MC);
                 break;
         }
-        console.log(bd09McLngLat);
 
         //
         window.map.clearOverlays();
@@ -135,10 +137,11 @@ function lngLat2PointClick(type) {
         let point = new BMap.Point(bd09McLngLat[0], bd09McLngLat[1]);
         window.map.panTo(point);
 
-        let marker = new BMap.Marker(point);
-        window.map.addOverlay(marker);
-
         window.map.setCenter(point);
+
+        // let marker = new BMap.Marker(point);
+        // window.map.addOverlay(marker);
+        coordPick(point);
 
         setTimeout(() => {
             window.map.setZoom(18);
