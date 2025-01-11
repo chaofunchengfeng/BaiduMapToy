@@ -33,6 +33,12 @@ A Chrome extension(mv3) for [Baidu Map https://map.baidu.com/](https://map.baidu
 
 ## 更新日志
 
+### v2.0
+
+*20250112*
+
+1. 优化坐标拾取
+
 ### v1.9
 
 *20250102*
