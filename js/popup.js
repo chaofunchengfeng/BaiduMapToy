@@ -153,7 +153,7 @@ async function clearHistory() {
     void updateTab();
 }
 
-// 是否自动放大全景地图
+// 是否 全景地图自动展开左侧图区
 isMaxPanoMapCheck.onchange = function (event) {
     void isMaxPanoMapChange(event.target.checked);
 }
